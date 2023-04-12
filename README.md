@@ -11,7 +11,7 @@ Docker Compose Stack for Jellyfin Automation:
 ipconfig /all
 ```
 
-- Linux:
+- Linux/Mac:
 ```
 ifconfig -a
 ```
