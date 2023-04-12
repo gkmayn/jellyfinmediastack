@@ -1,4 +1,4 @@
-# Automated JellyFin Stack
+# Automated JellyFin Stack 📽️
 
 Docker Compose Stack for Jellyfin Automation:
 
