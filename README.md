@@ -10,6 +10,15 @@ Requirements:
 - Docker-compose
 - Storage Space for Media
 
+Containers:
+
+- Jellyfin
+- Sonarr
+- Radarr
+- Jackett
+- Requestrr
+- VPN Service (Optional)
+
 # Finding the Network Adapter:
 
 - Windows:
