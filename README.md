@@ -17,6 +17,7 @@ Containers:
 - Radarr
 - Jackett
 - Requestrr
+- Prowlarr
 - VPN Service (Optional)
 
 # Finding the Network Adapter:

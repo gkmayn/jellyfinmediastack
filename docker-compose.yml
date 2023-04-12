@@ -39,6 +39,57 @@ services:
       - 8920:8920
     restart: unless-stopped
 
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    networks:
+      dockervlan:
+       ipv4_address: [IP ADDRESS]
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - AUTO_UPDATE=true #optional
+      - RUN_OPTS= #optional
+    volumes:
+      - /path/to/data:/config
+      - /path/to/blackhole:/downloads
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+
+  requestrr:
+    image: lscr.io/linuxserver/requestrr:latest
+    container_name: requestrr
+    networks:
+      dockervlan:
+       ipv4_address: [IP ADDRESS]
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - /path/to/appdata/config:/config
+    ports:
+      - 4545:4545
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    networks:
+      dockervlan:
+       ipv4_address: [IP ADDRESS]
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /path/to/data:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
 volumes:
   torrent-downloads:
   radarr-config:
@@ -49,6 +100,7 @@ volumes:
   qbittorrent-config:
   tx-config:
   tx-watch:
+  requestrr-config:
 
 networks:
   [MACVLAN NAME]:
