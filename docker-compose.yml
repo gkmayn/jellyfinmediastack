@@ -103,9 +103,6 @@ volumes:
   requestrr-config:
 
 networks:
-  [MACVLAN NAME]:
-    name: [MACVLAN NAME]
-    driver: macvlan
-    driver_opts:
-      parent: [NETWORD ADAPTER NAME]
+  dockervlan:
+    external: true
 
