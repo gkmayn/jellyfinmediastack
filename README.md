@@ -47,6 +47,6 @@ $ docker network create -d macvlan \
     --subnet=[SUBNET] \
     --gateway=[GATEWAY IP]  \
     -o parent=[NETWORK ADAPTER] \
-     [MACVLAN NAME]
+     mediamacvlan
 ```
 
