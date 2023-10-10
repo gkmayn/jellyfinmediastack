@@ -9,6 +9,7 @@ Requirements:
 - Docker
 - Docker-compose
 - Storage Space for Media
+- Linux server/host
 
 Containers:
 
@@ -19,14 +20,8 @@ Containers:
 - Prowlarr
 - Qbittorrent
 
-# Finding the Network Adapter:
+# Finding the Parent Network Adapter:
 
-- Windows:
-```
-ipconfig /all
-```
-
-- Linux/Mac:
 ```
 ifconfig -a
 ```
