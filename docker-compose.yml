@@ -6,7 +6,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=[YOUR TIMEZONE]
     volumes:
       - /path/to/sonarr.config:/config
       - /path/to/tvseries:/tv #optional
@@ -27,7 +27,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=UTC
+      - TZ=[YOUR TIMEZONE]
     volumes:
       - jellyfin-config:/config
       - torrent-downloads:/data
@@ -46,7 +46,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
+      - TZ=[YOUR TIMEZONE]
     volumes:
       - /path/to/appdata/config:/config
     ports:
@@ -62,7 +62,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=[YOUR TIMEZONE]
     volumes:
       - /path/to/data:/config
     ports:
