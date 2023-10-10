@@ -82,3 +82,11 @@ $ chmod +x directory.sh
 ```
 $ ./directory.sh
 ```
+
+# Creating the stack:
+
+After editing the compose file with nano/vim/etc. to include your assigned IP addresses, create the stack using the below:
+
+```
+$ sudo docker-compose up -d
+```
