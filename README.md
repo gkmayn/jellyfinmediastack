@@ -15,10 +15,9 @@ Containers:
 - Jellyfin
 - Sonarr
 - Radarr
-- Jackett
 - Requestrr
 - Prowlarr
-- VPN Service (Optional)
+- Qbittorrent
 
 # Finding the Network Adapter:
 
@@ -50,3 +49,42 @@ $ docker network create -d macvlan \
      mediamacvlan
 ```
 
+# Creating the mapped volumes:
+
+I choose to create the volumes outside of the compose file so I have better control over the storage and file permissions.
+
+I have created a script, 'directory.sh', that will create the necessary directories and print out the paths for them in the terminal. (Only use this if you want to have the directories in the same drive/storage!)
+
+1. Create a parent directory for these mappings to live in:
+
+```
+$ mkdir mediastack
+
+```
+
+```
+
+$ cd mediastack
+
+```
+
+2. Clone the repo into the 'mediastack' directory:
+
+```
+$ git clone [REPO]
+
+```
+
+3. Make the script executable by running (May need to use 'sudo'):
+
+```
+$ chmod +x directory.sh
+
+```
+
+4. Run the Script:
+
+```
+$ ./directory.sh
+
+```

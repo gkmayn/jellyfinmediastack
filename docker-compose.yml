@@ -8,9 +8,9 @@ services:
       - PGID=1000
       - TZ=[YOUR TIMEZONE]
     volumes:
-      - /path/to/sonarr.config:/config
-      - /path/to/tvseries:/tv #optional
-      - /path/to/downloadclient-downloads:/downloads #optional
+      - /path/to/sonarr-config:/config
+      - /path/to/tvseries:/tv
+      - /path/to/downloadclient-downloads:/downloads
     ports:
       - 8989:8989
     networks:
@@ -29,8 +29,10 @@ services:
       - PGID=1000
       - TZ=[YOUR TIMEZONE]
     volumes:
-      - jellyfin-config:/config
-      - torrent-downloads:/data
+      - /path/to/jellyfin-config:/config
+      - /path/to/tvseries:/tv
+      - /path/to/movies:/tmovies
+      - /path/to/downloadclient-downloads:/data
   # devices:
    #  - /dev/videoN:/dev/videoN # Mount GPU device 
     ports:
@@ -39,6 +41,25 @@ services:
       - 8920:8920
     restart: unless-stopped
 
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+     - PUID=1000
+     - PGID=1000
+     - TZ=Etc/UTC
+     - WEBUI_PORT=8080
+    volumes:
+      - /path/to/qbittorrent/config:/config
+      - /path/to/downloadclient-downloads:/downloads
+    ports:
+     - 8080:8080
+     - 6881:6881
+     - 6881:6881/udp
+    restart: unless-stopped
+    networks:
+      mediamacvlan:
+       ipv4_address: [IP ADDRESS]
 
   requestrr:
     image: lscr.io/linuxserver/requestrr:latest
@@ -48,9 +69,27 @@ services:
       - PGID=1000
       - TZ=[YOUR TIMEZONE]
     volumes:
-      - /path/to/appdata/config:/config
+      - /path/to/requestrr/config:/config
     ports:
       - 4545:4545
+    networks:
+      mediamacvlan:
+       ipv4_address: [IP ADDRESS]
+    restart: unless-stopped
+  
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=[YOUR TIMEZONE]
+    volumes:
+      - /path/to/radarr-config:/config
+      - /path/to/movies:/movies
+      - /path/to/downloadclient-downloads:/downloads
+    ports:
+      - 7878:7878
     networks:
       mediamacvlan:
        ipv4_address: [IP ADDRESS]
@@ -64,7 +103,7 @@ services:
       - PGID=1000
       - TZ=[YOUR TIMEZONE]
     volumes:
-      - /path/to/data:/config
+      - /path/to/prowlarr/config:/config
     ports:
       - 9696:9696
     networks:
