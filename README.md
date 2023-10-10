@@ -59,32 +59,26 @@ I have created a script, 'directory.sh', that will create the necessary director
 
 ```
 $ mkdir mediastack
-
 ```
 
 ```
-
 $ cd mediastack
-
 ```
 
 2. Clone the repo into the 'mediastack' directory:
 
 ```
 $ git clone [REPO]
-
 ```
 
 3. Make the script executable by running (May need to use 'sudo'):
 
 ```
 $ chmod +x directory.sh
-
 ```
 
 4. Run the Script:
 
 ```
 $ ./directory.sh
-
 ```
