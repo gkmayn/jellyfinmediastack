@@ -75,4 +75,5 @@ services:
 networks:
   mediamacvlan:
     external: true
+    name: mediamacvlan
 
