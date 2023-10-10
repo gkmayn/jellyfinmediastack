@@ -72,16 +72,6 @@ services:
        ipv4_address: [IP ADDRESS]
     restart: unless-stopped
 
-volumes:
-  torrent-downloads:
-  radarr-config:
-  sonarr-config:
-  prowlarr-config:
-  qbittorrent-config:
-  tx-config:
-  tx-watch:
-  requestrr-config:
-
 networks:
   mediamacvlan:
     external: true
