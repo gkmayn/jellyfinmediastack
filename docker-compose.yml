@@ -68,7 +68,7 @@ services:
     ports:
       - 9696:9696
     networks:
-      dockervlan:
+      mediamacvlan:
        ipv4_address: [IP ADDRESS]
     restart: unless-stopped
 
