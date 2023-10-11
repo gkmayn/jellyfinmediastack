@@ -31,7 +31,7 @@ services:
     volumes:
       - /path/to/jellyfin-config:/config
       - /path/to/tvseries:/tv
-      - /path/to/movies:/tmovies
+      - /path/to/movies:/movies
       - /path/to/downloadclient-downloads:/data
   # devices:
    #  - /dev/videoN:/dev/videoN # Mount GPU device 
