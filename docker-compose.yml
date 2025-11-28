@@ -1,5 +1,74 @@
-version: "2.1"
+# Jellyfin Media Stack
+# Replace all [YOUR TIMEZONE] with your timezone (e.g., America/New_York, Europe/London)
+# Replace all [IP ADDRESS] with static IPs from your macvlan subnet
+# Replace all /path/to/ with your actual directory paths
+
 services:
+  # Media Server - Streams your media to devices
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=[YOUR TIMEZONE]
+    volumes:
+      - /path/to/jellyfin-config:/config
+      - /path/to/tvseries:/tv          # TV library (read-only recommended)
+      - /path/to/movies:/movies        # Movie library (read-only recommended)
+      - /path/to/downloadclient-downloads:/data
+    # Hardware acceleration (uncomment and modify for your GPU)
+    # devices:
+    #   - /dev/dri:/dev/dri            # Intel/AMD GPU
+    #   - /dev/videoN:/dev/videoN      # NVIDIA GPU (also requires runtime: nvidia)
+    ports:
+      - 8096:8096                       # Web UI
+      - 7359:7359/udp                   # Client discovery
+      - 8920:8920                       # HTTPS (optional)
+    networks:
+      mediamacvlan:
+        ipv4_address: [IP ADDRESS]
+    restart: unless-stopped
+
+  # Download Client - Handles torrent downloads
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=[YOUR TIMEZONE]
+      - WEBUI_PORT=8080
+    volumes:
+      - /path/to/qbittorrent/config:/config
+      - /path/to/downloadclient-downloads:/downloads
+    ports:
+      - 8080:8080                       # Web UI
+      - 6881:6881                       # Torrent TCP port
+      - 6881:6881/udp                   # Torrent UDP port
+    networks:
+      mediamacvlan:
+        ipv4_address: [IP ADDRESS]
+    restart: unless-stopped
+
+  # Indexer Manager - Manages torrent/usenet indexers for Sonarr/Radarr
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=[YOUR TIMEZONE]
+    volumes:
+      - /path/to/prowlarr/config:/config
+    ports:
+      - 9696:9696                       # Web UI
+    networks:
+      mediamacvlan:
+        ipv4_address: [IP ADDRESS]
+    restart: unless-stopped
+
+  # TV Show Manager - Automates TV show downloads
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
@@ -12,71 +81,16 @@ services:
       - /path/to/tvseries:/tv
       - /path/to/downloadclient-downloads:/downloads
     ports:
-      - 8989:8989
+      - 8989:8989                       # Web UI
     networks:
       mediamacvlan:
-       ipv4_address: [IP ADDRESS]
+        ipv4_address: [IP ADDRESS]
+    depends_on:
+      - prowlarr
+      - qbittorrent
     restart: unless-stopped
 
-  jellyfin:
-    image: linuxserver/jellyfin:10.8.9
-    container_name: jellyfin
-    networks:
-      mediamacvlan:
-       ipv4_address: [IP ADDRESS]
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=[YOUR TIMEZONE]
-    volumes:
-      - /path/to/jellyfin-config:/config
-      - /path/to/tvseries:/tv
-      - /path/to/movies:/movies
-      - /path/to/downloadclient-downloads:/data
-  # devices:
-   #  - /dev/videoN:/dev/videoN # Mount GPU device 
-    ports:
-      - 8096:8096
-      - 7359:7359/udp
-      - 8920:8920
-    restart: unless-stopped
-
-  qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
-    container_name: qbittorrent
-    environment:
-     - PUID=1000
-     - PGID=1000
-     - TZ=Etc/UTC
-     - WEBUI_PORT=8080
-    volumes:
-      - /path/to/qbittorrent/config:/config
-      - /path/to/downloadclient-downloads:/downloads
-    ports:
-     - 8080:8080
-     - 6881:6881
-     - 6881:6881/udp
-    restart: unless-stopped
-    networks:
-      mediamacvlan:
-       ipv4_address: [IP ADDRESS]
-
-  requestrr:
-    image: lscr.io/linuxserver/requestrr:latest
-    container_name: requestrr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=[YOUR TIMEZONE]
-    volumes:
-      - /path/to/requestrr/config:/config
-    ports:
-      - 4545:4545
-    networks:
-      mediamacvlan:
-       ipv4_address: [IP ADDRESS]
-    restart: unless-stopped
-  
+  # Movie Manager - Automates movie downloads
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
@@ -89,30 +103,42 @@ services:
       - /path/to/movies:/movies
       - /path/to/downloadclient-downloads:/downloads
     ports:
-      - 7878:7878
+      - 7878:7878                       # Web UI
     networks:
       mediamacvlan:
-       ipv4_address: [IP ADDRESS]
+        ipv4_address: [IP ADDRESS]
+    depends_on:
+      - prowlarr
+      - qbittorrent
     restart: unless-stopped
 
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
+  # Request Bot - Discord/Telegram bot for media requests
+  requestrr:
+    image: lscr.io/linuxserver/requestrr:latest
+    container_name: requestrr
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=[YOUR TIMEZONE]
     volumes:
-      - /path/to/prowlarr/config:/config
+      - /path/to/requestrr/config:/config
     ports:
-      - 9696:9696
+      - 4545:4545                       # Web UI
     networks:
       mediamacvlan:
-       ipv4_address: [IP ADDRESS]
+        ipv4_address: [IP ADDRESS]
+    depends_on:
+      - sonarr
+      - radarr
     restart: unless-stopped
 
+# External macvlan network (must be created separately)
+# Example creation command:
+# docker network create -d macvlan \
+#   --subnet=192.168.1.0/24 \
+#   --gateway=192.168.1.1 \
+#   -o parent=eth0 mediamacvlan
 networks:
   mediamacvlan:
     external: true
     name: mediamacvlan
-
